@@ -1,0 +1,28 @@
+image: alpine
+
+stages:
+  - staging
+
+before_script:
+  - mkdir -p ~/.ssh
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  - apk add --update openssh
+  - echo "$STAGING_SSH_SECRET_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  - echo "$STAGING_SSH_PUBLIC_KEY" | tr -d '\r' > ~/.ssh/id_rsa.pub
+  - chmod 700 ~/.ssh/id_rsa
+  - chmod 700 ~/.ssh/id_rsa.pub
+  - eval "$(ssh-agent -s)"
+  - ssh-keyscan -H 'gitlab.com' >> ~/.ssh/known_hosts
+
+staging:
+  stage: staging
+  only:
+    - master
+  environment:
+    name: deploy
+    url: $STAGING_URL
+  script:
+    - ssh $STAGING_USER@$STAGING_HOST "cd $STAGING_WEB_ROOT && git pull"
+    - ssh $STAGING_USER@$STAGING_HOST "cd $STAGING_WEB_ROOT && rm -rf node_modules/"
+    - ssh $STAGING_USER@$STAGING_HOST "source ~/.bash_profile && cd $STAGING_WEB_ROOT && npm ci && npm run build"
+    - ssh $STAGING_USER@$STAGING_HOST "echo 'Сайт готов. $STAGING_URL'"
