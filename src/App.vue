@@ -3,15 +3,18 @@
         <div class="task-table">
             <persons />
         </div>
+
+        <modal></modal>
     </div>
 </template>
 
 <script>
     import persons from "@/components/persons";
+    import modal from "@/components/modal";
 
     export default {
         name: 'App',
-        components: { persons }
+        components: { persons, modal }
     }
 </script>
 

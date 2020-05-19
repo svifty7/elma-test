@@ -1,6 +1,11 @@
 <template>
     <div class="persons">
-        <person></person>
+        <person v-for="(i, k) in 2" :key="k" :properties="i"></person>
+        <div class="person">
+            <div class="person__wrap">
+                <button class="person__btn">Добавить пользователя</button>
+            </div>
+        </div>
     </div>
 </template>
 

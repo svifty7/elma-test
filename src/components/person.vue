@@ -2,11 +2,19 @@
     <div class="person">
         <div class="person__wrap">
             <div class="person__info">
-                <div class="person__name">asd</div>
+                <div class="person__name">Имя-имя Фамилия</div>
             </div>
-            <div class="person__tasks">
-                <task></task>
-            </div>
+            <SlickList class="person__tasks"
+                       :lockAxis="'y'"
+                       v-model="items"
+            >
+                <SlickItem v-for="(item, index) in items"
+                           :index="index"
+                           :key="index"
+                >
+                    <task :properties="item"></task>
+                </SlickItem>
+            </SlickList>
             <div class="person__footer">
                 <label class="person__footer--label">
                     <input
@@ -24,10 +32,20 @@
 
 <script>
     import task from "@/components/task";
+    import {SlickList, SlickItem} from 'vue-slicksort';
 
     export default {
         name: "person",
-        components: { task }
+        components: {
+            task,
+            SlickList,
+            SlickItem
+        },
+        data() {
+            return {
+                items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+            };
+        }
     }
 </script>
 
