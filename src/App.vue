@@ -1,7 +1,7 @@
 <template>
     <div id="app" class="app">
         <div class="task-table">
-            <persons />
+            <persons v-if="tableData" :users="tableData" />
         </div>
 
         <modal></modal>
@@ -14,7 +14,15 @@
 
     export default {
         name: 'App',
-        components: { persons, modal }
+        components: { persons, modal },
+        created() {
+            this.$store.dispatch('getUsers');
+        },
+        computed: {
+            tableData() {
+                return this.$store.getters.getResult;
+            }
+        }
     }
 </script>
 

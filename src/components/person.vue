@@ -2,17 +2,17 @@
     <div class="person">
         <div class="person__wrap">
             <div class="person__info">
-                <div class="person__name">Имя-имя Фамилия</div>
+                <div class="person__name">{{user.first_name}} {{user.last_name}}</div>
             </div>
             <SlickList class="person__tasks"
                        :lockAxis="'y'"
                        v-model="items"
             >
-                <SlickItem v-for="(item, index) in items"
+                <SlickItem v-for="(task, index) in user.tasks"
                            :index="index"
                            :key="index"
                 >
-                    <task :properties="item"></task>
+                    <task :task="task"></task>
                 </SlickItem>
             </SlickList>
             <div class="person__footer">
@@ -36,6 +36,7 @@
 
     export default {
         name: "person",
+        props: ["user"],
         components: {
             task,
             SlickList,

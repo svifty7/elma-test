@@ -19,3 +19,9 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Compiling files
+/public_html
+
+#Secret files
+.env

@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "first_name": "Ivan",
+    "last_name": "Ivanov",
+    "tasks": [
+      1,
+      2,
+      5,
+      7,
+      8,
+      12
+    ],
+    "image": "https://pixabay.com/get/55e3dd434f56a414f1dc8460da2932761c36dfec545170_640.jpg"
+  },
+  {
+    "id": 2,
+    "first_name": "Dima",
+    "last_name": "Vasilkov",
+    "tasks": [
+      3,
+      4,
+      5,
+      9
+    ],
+    "image": "https://pixabay.com/get/55e0d0414c56ad14f1dc8460da2932761c36dce5555779_640.jpg"
+  },
+  {
+    "id": 3,
+    "first_name": "Andrey",
+    "last_name": "Novikov",
+    "tasks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "image": ""
+  }
+]

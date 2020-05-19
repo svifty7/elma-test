@@ -1,6 +1,6 @@
 <template>
     <div class="persons">
-        <person v-for="(i, k) in 2" :key="k" :properties="i"></person>
+        <person v-for="(user, index) in users" :key="index" :user="user"></person>
         <div class="person">
             <div class="person__wrap">
                 <button class="person__btn">Добавить пользователя</button>
@@ -14,6 +14,7 @@
 
     export default {
         name: "persons",
+        props: ["users"],
         components: { person }
     }
 </script>
