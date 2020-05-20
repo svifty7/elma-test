@@ -22,7 +22,4 @@ staging:
     name: deploy
     url: $STAGING_URL
   script:
-    - ssh $STAGING_USER@$STAGING_HOST "cd $STAGING_WEB_ROOT && git pull"
-    - ssh $STAGING_USER@$STAGING_HOST "cd $STAGING_WEB_ROOT && rm -rf node_modules/"
-    - ssh $STAGING_USER@$STAGING_HOST "source ~/.bash_profile && cd $STAGING_WEB_ROOT && npm ci && npm run build"
-    - ssh $STAGING_USER@$STAGING_HOST "echo 'Сайт готов. $STAGING_URL'"
+    - ssh $STAGING_USER@$STAGING_HOST "source ~/.bash_profile && cd $STAGING_WEB_ROOT && git pull && rm -rf node_modules/ && npm ci && npm run build && echo 'Сайт готов. $STAGING_URL'"
