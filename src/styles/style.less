@@ -289,6 +289,7 @@ ul {
     padding: 16px;
     display: flex;
     background-color: @lGray;
+    flex-shrink: 0;
 
     &--label {
       flex: 1 1 100%;
@@ -407,21 +408,36 @@ ul {
   }
 
   &__person {
-    background-color: @black;
-    border-radius: 50%;
-    color: @white;
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     line-height: 16px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
     margin: 4px 4px 4px 0;
     overflow: hidden;
+    position: relative;
+    border-radius: 50%;
+    background-color: @black;
+
+    &--name {
+      position: relative;
+      z-index: 1;
+      color: @white;
+    }
+
+    &--img {
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-color: transparent;
+      width: 100%;
+      height: 100%;
+      content: '';
+      position: absolute;
+      z-index: 2;
+    }
   }
 
   &:hover {

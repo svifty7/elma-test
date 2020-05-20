@@ -20,8 +20,13 @@
             <div class="task__person"
                  v-for="(watcher, index) in task.watchers"
                  :key="index"
-                 :style="{ backgroundImage: `url('${watcher.image}')` }"
-            >{{watcher.image ? "" : concatWatcherName(watcher.name)}}</div>
+                 :title="watcher.name"
+            >
+                <span class="task__person--name">{{concatWatcherName(watcher.name)}}</span>
+                <div class="task__person--img"
+                     :style="{ backgroundImage: `url('${watcher.image}')` }"
+                ></div>
+            </div>
         </div>
 
         <div class="task__date">{{convertDate(task.date)}}</div>
