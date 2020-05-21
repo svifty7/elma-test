@@ -36,6 +36,7 @@ body {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   overscroll-behavior: contain;
+  user-select: none;
 }
 
 a {
@@ -239,7 +240,8 @@ ul {
     height: 53px;
     background-color: @lGray;
     padding: 16px;
-    position: relative;
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid @gray;
   }
 
   &__wrap {
@@ -250,6 +252,7 @@ ul {
     background-color: @white;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   &__name {
@@ -258,19 +261,28 @@ ul {
   }
 
   &__tasks {
+    .css_anim;
+
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    max-height: calc(100% - 53px);
+    max-height: calc(100% - 53px - 68px);
     flex: 1 1 100%;
-    border-top: 1px solid @gray;
     overflow-x: hidden;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    position: relative;
     overscroll-behavior: contain;
     padding-bottom: 16px;
+
+    &__ghost {
+      .css_anim;
+
+      z-index: 10;
+      position: relative;
+      box-shadow: 0 0 15px -3px rgba(23, 34, 46, .5);
+
+    }
 
     &::-webkit-scrollbar {
       width: 8px;
@@ -286,10 +298,13 @@ ul {
   }
 
   &__footer {
+    width: 100%;
     padding: 16px;
     display: flex;
     background-color: @lGray;
     flex-shrink: 0;
+    border-radius: 0 0 4px 4px;
+    border-top: 1px solid @gray;
 
     &--label {
       flex: 1 1 100%;
@@ -358,7 +373,7 @@ ul {
   padding: 16px;
   background: @white;
   border-radius: .3em;
-  box-shadow: 0 0 15px -3px rgba(23, 34, 46, .5);
+  border: 1px solid @gray;
   flex-shrink: 0;
   -webkit-overflow-scrolling: touch;
 
@@ -437,20 +452,6 @@ ul {
       content: '';
       position: absolute;
       z-index: 2;
-    }
-  }
-
-  &:hover {
-    .css_anim;
-
-    box-shadow: 0 0 15px 0 rgba(23, 34, 46, .4);
-
-    .task__underline {
-      .css_anim;
-
-      width: 100%;
-      opacity: 1;
-
     }
   }
 }

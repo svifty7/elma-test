@@ -5,8 +5,9 @@
                 <div class="person__name">{{user.first_name}} {{user.last_name}}</div>
             </div>
             <SlickList class="person__tasks"
-                       :lockAxis="'y'"
-                       v-model="items"
+                       :lockAxis="'xy'"
+                       v-model="user.tasks"
+                       :pressDelay="100"
             >
                 <SlickItem v-for="(task, index) in user.tasks"
                            :index="index"
