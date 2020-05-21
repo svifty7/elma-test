@@ -8,6 +8,7 @@
                        :lockAxis="'xy'"
                        v-model="user.tasks"
                        :pressDelay="100"
+                       @input="changeSortedTasks($event, user.id)"
             >
                 <SlickItem v-for="(task, index) in user.tasks"
                            :index="index"
@@ -43,14 +44,15 @@
             SlickList,
             SlickItem
         },
-        data() {
-            return {
-                items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-            };
+        methods: {
+            changeSortedTasks(event, userId) {
+                const updatedTasks = {
+                    userId: userId,
+                    sortedTasks: event
+                };
+
+                this.$store.dispatch("updateSortedTasks", updatedTasks)
+            }
         }
     }
 </script>
-
-<style scoped>
-
-</style>

@@ -9,7 +9,6 @@ const store = new Vuex.Store({
         tasks: [],
         users: [],
         result: [],
-        sorted: []
     },
     mutations: {
         changeUsers: (state, payload) => {
@@ -21,10 +20,31 @@ const store = new Vuex.Store({
         },
 
         setResult: (state, payload) => {
-            state.result = payload
+            const payloadString = JSON.stringify(payload);
+
+            state.result = payload;
+
+            localStorage.setItem('users', payloadString);
         }
     },
     actions: {
+        getData: ({commit, dispatch}) => {
+            const storageData = JSON.parse(localStorage.getItem('users'));
+            const locationParams = window.location.search.replace("?", "").split(";");
+
+            let locationParamsFormatted = {};
+
+            locationParams.forEach(el => {
+                locationParamsFormatted[el.split("=")[0]] = el.split("=")[1];
+            });
+
+            if (storageData && storageData.length && locationParamsFormatted["reset"] != "true") {
+                commit('setResult', storageData);
+            } else {
+                dispatch('getUsers')
+            }
+        },
+
         getUsers: context => {
             axios
                 .get('/json/users.json')
@@ -62,7 +82,7 @@ const store = new Vuex.Store({
 
                     updatedWatchers.push({
                         id: user.id,
-                        name: user.first_name + " " + user.last_name,
+                        name: user.first_name + ' ' + user.last_name,
                         image: user.image
                     });
                 });
@@ -71,7 +91,7 @@ const store = new Vuex.Store({
                 updatedTasks.push(task);
             });
 
-            commit("changeTasks", updatedTasks);
+            commit('changeTasks', updatedTasks);
             dispatch('splitData');
         },
 
@@ -90,6 +110,20 @@ const store = new Vuex.Store({
             });
 
             commit('setResult', result);
+        },
+
+        updateSortedTasks: ({commit, state}, payload) => {
+            let newResult = [];
+
+            state.result.forEach(user => {
+                if (user.id === payload.userId) {
+                    user.tasks = payload.sortedTasks;
+                }
+
+                newResult.push(user);
+            });
+
+            commit('setResult', newResult);
         }
     },
     getters: {

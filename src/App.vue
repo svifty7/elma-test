@@ -16,7 +16,7 @@
         name: 'App',
         components: { persons, modal },
         created() {
-            this.$store.dispatch('getUsers');
+            this.$store.dispatch('getData');
         },
         computed: {
             tableData() {
