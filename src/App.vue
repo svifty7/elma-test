@@ -1,10 +1,14 @@
 <template>
     <div id="app" class="app">
         <div class="task-table">
-            <persons v-if="tableData" :users="tableData" />
+            <persons v-if="tableData"
+                     :users="tableData"
+            />
         </div>
 
-        <modal></modal>
+        <transition name="vue-anim">
+            <modal></modal>
+        </transition>
     </div>
 </template>
 

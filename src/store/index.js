@@ -9,6 +9,16 @@ const store = new Vuex.Store({
         tasks: [],
         users: [],
         result: [],
+        modal: {
+            visible: false,
+            name: undefined,
+            params: {}
+        },
+        modalDefault: {
+            visible: false,
+            name: undefined,
+            params: {}
+        }
     },
     mutations: {
         changeUsers: (state, payload) => {
@@ -25,6 +35,10 @@ const store = new Vuex.Store({
             state.result = payload;
 
             localStorage.setItem('users', payloadString);
+        },
+
+        changeModal: (state, payload) => {
+            state.modal = payload;
         }
     },
     actions: {
@@ -102,9 +116,8 @@ const store = new Vuex.Store({
                 let tasksResult = [];
 
                 user.tasks.forEach(item => {
-                    tasksResult.push(state.tasks.find(task => task.id === item));
+                    tasksResult.push(state.tasks.find(task => task.id === item || task.id === item.id));
                 });
-
                 user.tasks = tasksResult;
                 result.push(user);
             });
@@ -124,12 +137,106 @@ const store = new Vuex.Store({
             });
 
             commit('setResult', newResult);
+        },
+
+        removeUser: ({commit, state, dispatch}, payload) => {
+            let updatedUsers = [];
+            let updatedTasks = [];
+
+            state.users.forEach(user => {
+                if (user.id !== payload) {
+                    updatedUsers.push(user);
+                }
+            });
+
+            commit('changeUsers', updatedUsers);
+
+            state.tasks.forEach(task => {
+                let updatedWatchers = [];
+
+                task.watchers.forEach(watcher => {
+
+                    if (watcher.id !== payload) {
+                        let user = state.users.find(user => user.id === watcher.id);
+
+                        updatedWatchers.push({
+                            id: user.id,
+                            name: user.first_name + ' ' + user.last_name,
+                            image: user.image
+                        });
+                    }
+                });
+
+                task.watchers = updatedWatchers;
+                updatedTasks.push(task);
+            });
+
+            commit('changeTasks', updatedTasks);
+            dispatch('splitData')
+        },
+
+        toggleModal: ({state, commit}, payload) => {
+            let modalData = state.modal;
+
+            if (typeof payload === "string" && payload === "close") {
+                modalData = state.modalDefault;
+            } else if (typeof payload === "object" && typeof payload.type === "string") {
+                modalData = {
+                    visible: true,
+                    type: payload.type,
+                    params: payload.params
+                }
+            } else if (typeof payload === "string") {
+                modalData = {
+                    ...modalData,
+                    visible: true,
+                    type: payload
+                }
+            } else {
+                throw new Error("Modal type is not defined");
+            }
+
+            commit('changeModal', modalData);
+        },
+
+        removeTask: ({state, dispatch, commit}, payload) => {
+            let updatedTasks = [];
+            let updatedUsers = [];
+
+            state.tasks.forEach(task => {
+                if (task.id !== payload) {
+                    updatedTasks.push(task);
+                }
+            });
+
+            commit("changeTasks", updatedTasks);
+
+            state.users.forEach(user => {
+                let updatedUserTasks = [];
+
+                user.tasks.forEach(task => {
+                    if (task.id !== payload) {
+                        updatedUserTasks.push(task)
+                    }
+                });
+
+                user.tasks = updatedUserTasks;
+                updatedUsers.push(user);
+            });
+
+            commit("changeUsers", updatedUsers)
+
+            dispatch("splitData");
         }
     },
     getters: {
         getResult: state => {
             return state.result;
         },
+
+        getModalData: state => {
+            return state.modal;
+        }
     }
 })
 

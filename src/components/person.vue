@@ -3,6 +3,9 @@
         <div class="person__wrap">
             <div class="person__info">
                 <div class="person__name">{{user.first_name}} {{user.last_name}}</div>
+                <div class="person__rm"
+                     @click.prevent="removeUser"
+                ></div>
             </div>
             <SlickList class="person__tasks"
                        :lockAxis="'xy'"
@@ -20,13 +23,15 @@
             <div class="person__footer">
                 <label class="person__footer--label">
                     <input
-                            ref=""
+                            ref="taskName"
                             type="text"
                             class="person__footer--input"
                             placeholder="Название задачи"
                     >
                 </label>
-                <button class="person__footer--btn">Добавить</button>
+                <button class="person__footer--btn"
+                        @click.prevent="newTask"
+                >Добавить</button>
             </div>
         </div>
     </div>
@@ -52,6 +57,22 @@
                 };
 
                 this.$store.dispatch("updateSortedTasks", updatedTasks)
+            },
+
+            removeUser() {
+                this.$store.dispatch("removeUser", this.user.id)
+            },
+
+            newTask() {
+                const modalInfo = {
+                    type: "new-task",
+                    params: {
+                        name: this.$refs.taskName.value ? this.$refs.taskName.value : ""
+                    }
+                }
+
+                this.$store.dispatch("toggleModal", modalInfo);
+                this.$refs.taskName.value = "";
             }
         }
     }

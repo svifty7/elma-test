@@ -1,5 +1,7 @@
 <template>
-    <div class="task">
+    <div class="task"
+         @click="updateTask"
+    >
         <div class="task__name">{{task.name}}</div>
 
         <div class="task__desc"
@@ -11,7 +13,7 @@
         >
             <li v-for="(listItem, index) in task.list"
                 :key="index"
-            >{{listItem.text}}</li>
+            >{{listItem}}</li>
         </ul>
 
         <div v-if="task.watchers && task.watchers.length"
@@ -55,8 +57,18 @@
 
                 return day + "." + month + "." + year;
             },
+
             concatWatcherName(name) {
                 return name.slice(0, 1);
+            },
+
+            updateTask() {
+                const modalInfo = {
+                    type: "update-task",
+                    params: this.task
+                }
+
+                this.$store.dispatch("toggleModal", modalInfo);
             }
         }
     }

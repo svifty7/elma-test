@@ -1,13 +1,19 @@
 <template>
     <transition name="vue-anim">
-        <div class="modal" v-show="show">
-            <div class="modal__background"></div>
+        <div class="modal" v-if="modal.visible">
+            <div class="modal__background"
+                 @click.prevent="closeModal"
+            ></div>
             <div class="modal__container">
                 <div class="modal__header">
-                    <div class="modal__close"></div>
+                    <div class="modal__close"
+                         @click.prevent="closeModal"
+                    ></div>
                 </div>
-                <create-user v-show="false"></create-user>
-                <create-task v-show="true"></create-task>
+                <create-user v-if="modal.type === 'user-add'"></create-user>
+                <create-task v-if="modal.type === 'new-task' || 'update-task'"
+                             :data="modalData"
+                ></create-task>
             </div>
         </div>
     </transition>
@@ -20,9 +26,20 @@
     export default {
         name: "modal",
         components: { createUser, createTask },
-        data() {
-            return {
-                show: false
+        computed: {
+            modal() {
+                return this.$store.getters.getModalData;
+            },
+            modalData() {
+                return {
+                    type: this.modal.type ? this.modal.type : undefined,
+                    params: this.modal.params ? this.modal.params : {}
+                }
+            }
+        },
+        methods: {
+            closeModal() {
+                this.$store.dispatch("toggleModal", "close")
             }
         }
     }

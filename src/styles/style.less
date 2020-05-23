@@ -92,7 +92,7 @@ ul {
   &__input {
     display: flex;
     width: 100%;
-    border: 1px solid @black;
+    border: 1px solid @gray;
     border-radius: 4px;
     padding: 8px;
     text-overflow: ellipsis;
@@ -101,7 +101,7 @@ ul {
   &__textarea {
     display: flex;
     width: 100%;
-    border: 1px solid @black;
+    border: 1px solid @gray;
     border-radius: 4px;
     padding: 8px;
     resize: none;
@@ -111,12 +111,18 @@ ul {
   &__list {
     width: 100%;
 
+    &--label {
+      display: flex;
+      margin-bottom: 4px;
+      margin-left: 8px;
+    }
+
     &__btn {
       .css_anim;
 
-      border: 2px dashed fadeout(@black, 30%);
-      background-color: @lGray;
-      color: @black;
+      border: 2px dashed @gray;
+      background-color: transparent;
+      color: @gray;
       padding: 8px 16px;
       display: inline-flex;
       justify-content: center;
@@ -128,8 +134,7 @@ ul {
       &:hover {
         .css_anim;
 
-        background-color: @black;
-        color: @white;
+        color: @black;
         border-color: @black;
       }
     }
@@ -152,8 +157,18 @@ ul {
     &:hover {
       .css_anim;
 
-      background-color: @white;
-      color: @black;
+      background-color: lighten(@black, 20%);
+      border-color: lighten(@black, 20%);
+    }
+
+    &.remove {
+      background-color: @red;
+      border-color: @red;
+
+      &:hover {
+        background-color: lighten(@red, 20%);
+        border-color: lighten(@red, 20%);
+      }
     }
   }
 }
@@ -237,11 +252,44 @@ ul {
     flex-shrink: 0;
     justify-content: center;
     width: 100%;
-    height: 53px;
+    height: 57px;
     background-color: @lGray;
     padding: 16px;
     border-radius: 4px 4px 0 0;
     border-bottom: 1px solid @gray;
+  }
+
+  &__name {
+    text-align: center;
+    width: 100%;
+    line-height: 24px;
+  }
+
+  &__rm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+
+    &:before, &:after {
+      content: '';
+      display: block;
+      width: calc(100% - 6px);
+      height: 2px;
+      position: absolute;
+      background-color: @red;
+    }
+
+    &:before {
+      transform: rotate(45deg);
+    }
+
+    &:after {
+      transform: rotate(-45deg);
+    }
   }
 
   &__wrap {
@@ -255,11 +303,6 @@ ul {
     position: relative;
   }
 
-  &__name {
-    text-align: center;
-    width: 100%;
-  }
-
   &__tasks {
     .css_anim;
 
@@ -267,7 +310,7 @@ ul {
     flex-direction: column;
     width: 100%;
     height: 100%;
-    max-height: calc(100% - 53px - 68px);
+    max-height: 100%;
     flex: 1 1 100%;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -340,8 +383,7 @@ ul {
   }
 
   &__btn {
-    .css_anim;
-
+    transition: border 0s, color .3s, background-color .3s;
     border: 2px dashed @white;
     background-color: @black;
     color: @white;
@@ -354,11 +396,11 @@ ul {
     width: 100%;
 
     &:hover {
-      .css_anim;
-
+      transition: border 0s, color .3s, background-color .3s;
       background-color: @white;
       color: @black;
-      border-color: darken(@gray, 30%);
+      border-color: @white;
+      border-style: solid;
     }
   }
 }
@@ -376,6 +418,7 @@ ul {
   border: 1px solid @gray;
   flex-shrink: 0;
   -webkit-overflow-scrolling: touch;
+  cursor: pointer;
 
   &:first-child {
     margin-top: 16px;
@@ -437,8 +480,6 @@ ul {
     background-color: @black;
 
     &--name {
-      position: relative;
-      z-index: 1;
       color: @white;
     }
 
@@ -451,7 +492,6 @@ ul {
       height: 100%;
       content: '';
       position: absolute;
-      z-index: 2;
     }
   }
 }
@@ -467,6 +507,7 @@ ul {
   &__background {
     width: 100%;
     height: 100%;
+    cursor: pointer;
   }
 
   &__container {
@@ -498,6 +539,7 @@ ul {
     color: @black;
     width: 18px;
     height: 18px;
+    cursor: pointer;
 
     &:after, &:before {
       content: "";

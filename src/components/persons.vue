@@ -3,7 +3,9 @@
         <person v-for="(user, index) in users" :key="index" :user="user"></person>
         <div class="person">
             <div class="person__wrap">
-                <button class="person__btn">Добавить пользователя</button>
+                <button class="person__btn"
+                        @click.prevent="openModal"
+                >Добавить пользователя</button>
             </div>
         </div>
     </div>
@@ -15,6 +17,11 @@
     export default {
         name: "persons",
         props: ["users"],
-        components: { person }
+        components: { person },
+        methods: {
+            openModal() {
+                this.$store.dispatch("toggleModal", "user-add")
+            }
+        }
     }
 </script>
