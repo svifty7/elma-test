@@ -116,8 +116,14 @@ const store = new Vuex.Store({
                 let tasksResult = [];
 
                 user.tasks.forEach(item => {
-                    tasksResult.push(state.tasks.find(task => task.id === item || task.id === item.id));
+                    let userTask = state.tasks.find(task => task.id === item || task.id === item.id);
+
+                    userTask.responsible = user.id;
+
+                    tasksResult.push(userTask);
                 });
+
+                user.name = user.first_name + " " + user.last_name;
                 user.tasks = tasksResult;
                 result.push(user);
             });

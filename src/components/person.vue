@@ -2,7 +2,7 @@
     <div class="person">
         <div class="person__wrap">
             <div class="person__info">
-                <div class="person__name">{{user.first_name}} {{user.last_name}}</div>
+                <div class="person__name">{{user.name}}</div>
                 <div class="person__rm"
                      @click.prevent="removeUser"
                 ></div>

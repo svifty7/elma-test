@@ -4,9 +4,10 @@
         <label class="create-task__label" v-for="(item, index) in list" :key="index">
             <input type="text"
                    class="create-task__input"
-                   name="task-list-1"
+                   :name="'task-list-' + index"
                    placeholder="Введите текст"
-                   :value="item ? item : ''"
+                   v-model="list[index]"
+
             >
         </label>
 
@@ -20,6 +21,8 @@
     export default {
         name: "options-list",
         props: ["list"],
-
+        created() {
+            this.options = this.list;
+        }
     }
 </script>

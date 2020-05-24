@@ -11,9 +11,9 @@
                     ></div>
                 </div>
                 <create-user v-if="modal.type === 'user-add'"></create-user>
-                <create-task v-if="modal.type === 'new-task' || modal.type === 'update-task'"
-                             :data="modalData"
-                ></create-task>
+                <modify-task v-if="modal.type === 'new-task' || modal.type === 'update-task'"
+                             :key="modal.type"
+                ></modify-task>
             </div>
         </div>
     </transition>
@@ -21,20 +21,14 @@
 
 <script>
     import createUser from "@/components/create-user"
-    import createTask from "@/components/create-task"
+    import modifyTask from "@/components/modify-task"
 
     export default {
         name: "modal",
-        components: { createUser, createTask },
+        components: { createUser, modifyTask },
         computed: {
             modal() {
                 return this.$store.getters.getModalData;
-            },
-            modalData() {
-                return {
-                    type: this.modal.type ? this.modal.type : undefined,
-                    params: this.modal.params ? this.modal.params : {}
-                }
             }
         },
         methods: {
