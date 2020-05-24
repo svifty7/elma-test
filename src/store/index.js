@@ -227,6 +227,23 @@ const store = new Vuex.Store({
             commit("changeUsers", updatedUsers)
 
             dispatch("splitData");
+            dispatch("toggleModal", "close");
+        },
+
+        createUser: ({state, commit, dispatch}, payload) => {
+            const userInfo = {
+                ...payload,
+                id: state.users.length + 1,
+                tasks: [],
+            };
+
+            let updatedUsers = state.users;
+
+            updatedUsers.push(userInfo);
+
+            commit("changeUsers", updatedUsers);
+            dispatch("splitData");
+            dispatch("toggleModal", "close");
         }
     },
     getters: {

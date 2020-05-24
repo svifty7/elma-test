@@ -11,7 +11,7 @@
                     ></div>
                 </div>
                 <create-user v-if="modal.type === 'user-add'"></create-user>
-                <create-task v-if="modal.type === 'new-task' || 'update-task'"
+                <create-task v-if="modal.type === 'new-task' || modal.type === 'update-task'"
                              :data="modalData"
                 ></create-task>
             </div>

@@ -1,5 +1,5 @@
 <template>
-    <form class="create-task">
+    <form class="create-task" @submit.prevent="">
         <div class="create-task__title">
             {{data && data.type === "new-task" ? "Новая задача" : "Изменить задачу"}}
         </div>
@@ -61,7 +61,6 @@
             },
 
             removeTask() {
-                this.$store.dispatch("toggleModal", "close");
                 this.$store.dispatch("removeTask", this.task.id);
             }
         }

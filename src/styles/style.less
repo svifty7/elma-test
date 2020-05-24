@@ -1,6 +1,9 @@
 @import "~normalize.css/normalize.css";
 @import "fonts";
 
+/* Media queries */
+@lg: ~"screen and (min-width: 990px)";
+
 /* Color Theme Swatches in Hex */
 @dRed: #A0100A;
 @red: #EA2D26;
@@ -313,7 +316,7 @@ ul {
     max-height: 100%;
     flex: 1 1 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     padding-bottom: 16px;
@@ -376,8 +379,8 @@ ul {
       cursor: pointer;
 
       &:hover {
-        background-color: lighten(@black, 30%);
-        border-left-color: lighten(@black, 30%);
+        background-color: lighten(@black, 20%);
+        border-color: lighten(@black, 20%);
       }
     }
   }
@@ -494,6 +497,14 @@ ul {
       position: absolute;
     }
   }
+
+  &:hover {
+    .css_anim;
+
+    @media @lg {
+      box-shadow: 0 0 25px -5px fadeout(@black, 70%);
+    }
+  }
 }
 
 .modal {
@@ -503,6 +514,7 @@ ul {
   background-color: fadeout(@black, 65%);
   width: 100%;
   height: 100%;
+  z-index: 1000;
 
   &__background {
     width: 100%;
