@@ -1,8 +1,7 @@
 /**
  * Хелпер для глубокого копирования.
- * Возвращает готовый к использованию json.
  *
- * @param json
+ * @param {any} json
  * @return {any}
  */
 export function deepCopy(json) {

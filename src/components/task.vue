@@ -46,11 +46,11 @@
              * На вход принимает строку даты в формате ISO.
              * Возвращает строку с "человеческой" датой.
              *
-             * @param date
              * @return {string}
+             * @param {string} dateString
              */
-            convertDate(date) {
-                date = new Date(date);
+            convertDate(dateString) {
+                const date = new Date(dateString);
 
                 let day = date.getDate();
                 let month = date.getMonth() + 1;
@@ -71,7 +71,7 @@
              * Обрезка имени пользователя отслеживающего задачу до одной буквы.
              * Используется, если у пользователя нет ссылки на аватар.
              *
-             * @param name
+             * @param {string} name
              * @return {*}
              */
             concatWatcherName(name) {

@@ -50,9 +50,13 @@
             SlickItem
         },
         methods: {
+
             /**
              * Вызов метода для обновления порядка задач у пользователя.
              * Отправляется объект с ID пользователя и готовым списком задач.
+             *
+             * @param event
+             * @param {number} userId
              */
             changeSortedTasks(event, userId) {
                 const updatedTasks = {

@@ -112,14 +112,13 @@ const store = new Vuex.Store({
          */
         getUsers: context => {
             axios
-                .get('/json/users.json')
+                .get('/json/users.json1')
                 .then(response => {
                     context.commit('changeUsers', response.data);
                     store.dispatch('getTasks')
                 })
-                .catch(error => {
+                .catch(() => {
                     context.commit('changeUsers', []);
-                    console.log(error)
                 });
         },
 
@@ -137,9 +136,8 @@ const store = new Vuex.Store({
                     context.commit('changeTasks', response.data);
                     store.dispatch('updateTasksWatchers')
                 })
-                .catch(error => {
+                .catch(() => {
                     context.commit('changeTasks', []);
-                    console.log(error)
                 });
         },
 
@@ -222,6 +220,10 @@ const store = new Vuex.Store({
          * @param payload
          */
         updateSortedTasks: ({commit, state}, payload) => {
+            if (!Array.isArray(payload.sortedTasks)) {
+                throw new Error("Invalid array with tasks...")
+            }
+
             let result = deepCopy(state.result);
             let newResult = [];
 
@@ -243,9 +245,13 @@ const store = new Vuex.Store({
          * @param commit
          * @param state
          * @param dispatch
-         * @param payload
+         * @param {number} payload
          */
         removeUser: ({commit, state, dispatch}, payload) => {
+            if (typeof payload !== "number") {
+                throw new Error("Invalid user ID...");
+            }
+
             let updatedUsers = [];
             let updatedTasks = [];
             let users = deepCopy(state.users);
@@ -293,7 +299,7 @@ const store = new Vuex.Store({
          *
          * @param state
          * @param commit
-         * @param payload
+         * @param {Object|string} payload
          */
         toggleModal: ({state, commit}, payload) => {
             let modalData = deepCopy(state.modal);
@@ -317,7 +323,7 @@ const store = new Vuex.Store({
                     type: payload
                 }
             } else {
-                throw new Error("Modal type is not defined");
+                throw new Error("Modal's type isn't defined...");
             }
 
             commit('changeModal', modalData);
@@ -330,9 +336,13 @@ const store = new Vuex.Store({
          * @param state
          * @param dispatch
          * @param commit
-         * @param payload
+         * @param {number} payload
          */
         removeTask: ({state, dispatch, commit}, payload) => {
+            if (typeof payload !== "number") {
+                throw new Error("Invalid task ID...");
+            }
+
             let updatedTasks = [];
             let updatedUsers = [];
             let users = deepCopy(state.users);
@@ -373,16 +383,20 @@ const store = new Vuex.Store({
          * @param state
          * @param commit
          * @param dispatch
-         * @param payload
+         * @param {Object} payload
          */
         createUser: ({state, commit, dispatch}, payload) => {
+            if (typeof payload !== "object") {
+                throw new Error("Invalid user parameters...");
+            }
+
             const userInfo = {
                 ...payload,
                 id: state.users.length + 1,
                 tasks: [],
             };
 
-            let updatedUsers = state.users;
+            let updatedUsers = deepCopy(state.users);
 
             updatedUsers.push(userInfo);
 
@@ -400,9 +414,17 @@ const store = new Vuex.Store({
          * @param state
          * @param commit
          * @param dispatch
-         * @param payload
+         * @param {Object} payload
          */
         pushTask: ({state, commit, dispatch}, payload) => {
+            if (typeof payload.type !== "string") {
+                throw new Error("Invalid action type...");
+            }
+
+            if (typeof payload.task !== "object") {
+                throw new Error("Task params is empty...");
+            }
+
             let tasks = deepCopy(state.tasks);
             let users = deepCopy(state.users);
             let modalParams = deepCopy(state.modal.params);

@@ -126,7 +126,7 @@
              * Удаление поля из списка внутри задачи.
              * Если список стал пустым, то добавляется пустой элемент.
              *
-             * @param index
+             * @param {number} index
              */
             removeOption(index) {
                 this.task.list.splice(index, 1);
