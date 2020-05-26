@@ -8,9 +8,11 @@
                        :name="'task-list-item-' + index"
                        placeholder="Введите текст"
                        v-model="list[index]"
+                       autocomplete="off"
                 >
                 <button class="create-task__rm-input"
                         type="button"
+                        v-if="notLastItem"
                         @click.prevent="$emit('remove-option', index)"
                 ></button>
             </span>
@@ -25,6 +27,18 @@
 <script>
     export default {
         name: "options-list",
-        props: ["list"]
+        props: ["list"],
+        computed: {
+
+            /**
+             * Проверяет список элементов.
+             * Если элементов больше одного или единственный элемент не равен пустой строке, то возвращается "true".
+             *
+             * @return {boolean|boolean}
+             */
+            notLastItem() {
+                return this.list.length > 1 || (this.list.length === 1 && this.list[0] !== "");
+            }
+        }
     }
 </script>

@@ -9,6 +9,8 @@
                    placeholder="Иван"
                    ref="first_name"
                    required="required"
+                   autocomplete="off"
+                   autofocus="autofocus"
             >
         </label>
         <label class="create-user__label">
@@ -18,6 +20,7 @@
                    name="last-name"
                    placeholder="Иванов"
                    ref="last_name"
+                   autocomplete="off"
             >
         </label>
         <label class="create-user__label">
@@ -27,6 +30,7 @@
                    name="last-name"
                    placeholder="Ссылка на аватар"
                    ref="image"
+                   autocomplete="off"
             >
         </label>
 

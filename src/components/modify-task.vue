@@ -10,6 +10,8 @@
                    name="task-name"
                    placeholder="Название задачи"
                    v-model="task.name"
+                   required="required"
+                   autofocus="autofocus"
             >
         </label>
 
@@ -122,11 +124,16 @@
 
             /**
              * Удаление поля из списка внутри задачи.
+             * Если список стал пустым, то добавляется пустой элемент.
              *
              * @param index
              */
             removeOption(index) {
-                this.task.list.splice(index, 1)
+                this.task.list.splice(index, 1);
+
+                if (this.task.list.length === 0) {
+                    this.addOption();
+                }
             },
 
             /**
