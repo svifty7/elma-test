@@ -6,14 +6,16 @@
 
         <div class="task__desc"
              v-if="task.desc"
-        >{{task.desc}}</div>
+        >{{task.desc}}
+        </div>
 
         <ul v-if="task.list && task.list.length"
             class="task__list"
         >
             <li v-for="(listItem, index) in task.list"
                 :key="index"
-            >{{listItem}}</li>
+            >{{listItem}}
+            </li>
         </ul>
 
         <div v-if="task.watchers && task.watchers.length"

@@ -31,7 +31,8 @@
                 </label>
                 <button class="person__footer--btn"
                         @click.prevent="newTask"
-                >Добавить</button>
+                >Добавить
+                </button>
             </div>
         </div>
     </div>

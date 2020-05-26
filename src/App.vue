@@ -18,7 +18,7 @@
 
     export default {
         name: 'App',
-        components: { persons, modal },
+        components: {persons, modal},
         created() {
             this.$store.dispatch('getData');
         },

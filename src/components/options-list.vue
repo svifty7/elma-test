@@ -20,7 +20,8 @@
 
         <button type="button" class="create-task__list__btn"
                 @click.prevent="$emit('add-option')"
-        >Добавить элемент</button>
+        >Добавить элемент
+        </button>
     </div>
 </template>
 

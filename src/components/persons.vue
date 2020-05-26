@@ -5,7 +5,8 @@
             <div class="person__wrap">
                 <button class="person__btn"
                         @click.prevent="openModal"
-                >Добавить пользователя</button>
+                >Добавить пользователя
+                </button>
             </div>
         </div>
     </div>
@@ -17,7 +18,7 @@
     export default {
         name: "persons",
         props: ["users"],
-        components: { person },
+        components: {person},
         methods: {
 
             /**
