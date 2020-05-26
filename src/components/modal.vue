@@ -12,7 +12,7 @@
                         ></div>
                     </div>
                     <create-user v-if="modal.type === 'user-add'"></create-user>
-                    <modify-task v-if="modal.type === 'new-task' || modal.type === 'update-task'"
+                    <modify-task v-if="modalTypeIsTask"
                                  :key="modal.type"
                     ></modify-task>
                 </div>
@@ -31,6 +31,10 @@
         computed: {
             modal() {
                 return this.$store.getters.getModalData;
+            },
+
+            modalTypeIsTask() {
+                return this.modal.type === 'new-task' || this.modal.type === 'update-task'
             }
         },
         methods: {

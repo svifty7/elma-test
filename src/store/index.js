@@ -49,6 +49,16 @@ const store = new Vuex.Store({
             });
 
             if (storageData && storageData.length && locationParamsFormatted["reset"] != "true") {
+                let tasks = [];
+
+                storageData.forEach(user => {
+                    user.tasks.forEach(task => {
+                        tasks.push(task)
+                    });
+                });
+
+                commit('changeUsers', storageData);
+                commit('changeTasks', tasks);
                 commit('setResult', storageData);
             } else {
                 dispatch('getUsers')
@@ -294,6 +304,7 @@ const store = new Vuex.Store({
             console.log(task)
 
             tasks.push(task);
+
             commit("changeTasks", tasks);
             commit("changeUsers", users);
             dispatch("updateTasksWatchers").then(() => {
