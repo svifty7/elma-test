@@ -4,16 +4,18 @@
             <div class="modal__background"
                  @click.prevent="closeModal"
             ></div>
-            <div class="modal__container">
-                <div class="modal__header">
-                    <div class="modal__close"
-                         @click.prevent="closeModal"
-                    ></div>
+            <div class="modal__wrapper">
+                <div class="modal__container">
+                    <div class="modal__header">
+                        <div class="modal__close"
+                             @click.prevent="closeModal"
+                        ></div>
+                    </div>
+                    <create-user v-if="modal.type === 'user-add'"></create-user>
+                    <modify-task v-if="modal.type === 'new-task' || modal.type === 'update-task'"
+                                 :key="modal.type"
+                    ></modify-task>
                 </div>
-                <create-user v-if="modal.type === 'user-add'"></create-user>
-                <modify-task v-if="modal.type === 'new-task' || modal.type === 'update-task'"
-                             :key="modal.type"
-                ></modify-task>
             </div>
         </div>
     </transition>

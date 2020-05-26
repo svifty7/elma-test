@@ -67,7 +67,8 @@
                 const modalInfo = {
                     type: "new-task",
                     params: {
-                        name: this.$refs.taskName.value ? this.$refs.taskName.value : ""
+                        name: this.$refs.taskName.value ? this.$refs.taskName.value : "",
+                        user: this.user,
                     }
                 }
 

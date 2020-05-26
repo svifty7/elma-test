@@ -1,5 +1,5 @@
 <template>
-    <form class="create-task" @submit.prevent="">
+    <form class="create-task" @submit.prevent="submitTask">
         <div class="create-task__title">
             {{type === "new-task" ? "Новая задача" : "Изменить задачу"}}
         </div>
@@ -23,12 +23,13 @@
         </label>
 
         <options-list :list="task.list"
-                      @addOption="addOption"
+                      @add-option="addOption"
+                      @remove-option="removeOption"
         ></options-list>
 
         <div class="create-task__label">
             <span class="create-task__label--faker">Ответственный</span>
-            <Multiselect :options="result"
+            <Multiselect :options="users"
                          placeholder="Выбрать ответственного"
                          ref="responsible"
                          v-model="task.responsible"
@@ -39,7 +40,7 @@
 
         <div class="create-task__label">
             <span class="create-task__label--faker">Отслеживают</span>
-            <Multiselect :options="result"
+            <Multiselect :options="users"
                          placeholder="Выбрать отслеживающих"
                          ref="watchers"
                          v-model="task.watchers"
@@ -61,8 +62,8 @@
             </Multiselect>
         </div>
 
-        <button class="create-task__btn">{{type === 'update-task' ? 'Сохранить' : 'Добавить'}}</button>
-        <button class="create-task__btn remove"
+        <button type="submit" class="create-task__btn">{{type === 'update-task' ? 'Сохранить' : 'Добавить'}}</button>
+        <button type="button" class="create-task__btn remove"
                 v-if="type === 'update-task'"
                 @click.prevent="removeTask"
         >Удалить задачу
@@ -80,6 +81,8 @@
             return {
                 type: undefined,
                 task: {},
+                users: [],
+                tasks: []
             }
         },
         components: {
@@ -88,22 +91,23 @@
         },
         mounted() {
             const modalData = this.$store.getters.getModalData;
+            const users = this.$store.getters.getResult;
+            const tasks = this.$store.getters.getTasks;
+            const taskUser = modalData.params.user ?
+                modalData.params.user :
+                users.find(user => user.id === modalData.params.responsible);
 
             this.type = modalData.type;
+            this.users = users;
+            this.tasks = tasks;
 
             this.task = {
-                id: modalData.params.id,
+                id: modalData.params.id ? modalData.params.id : tasks.length + 1,
                 name: modalData.params.name,
                 desc: modalData.params.desc,
                 list: modalData.params.list && modalData.params.list.length ? modalData.params.list : [""],
-                date: modalData.params.date,
                 watchers: modalData.params.watchers,
-                responsible: this.result.find(user => user.id === modalData.params.responsible)
-            }
-        },
-        computed: {
-            result() {
-                return this.$store.getters.getResult;
+                responsible: taskUser,
             }
         },
         methods: {
@@ -111,9 +115,17 @@
                 this.task.list.push("")
             },
 
+            removeOption(index) {
+                this.task.list.splice(index, 1)
+            },
+
             removeTask() {
                 this.$store.dispatch("removeTask", this.task.id);
-            }
+            },
+
+            submitTask() {
+                this.$store.dispatch("pushTask", this.task);
+            },
         }
     }
 </script>

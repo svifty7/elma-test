@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios';
+import {deepCopy} from "@/helpers/deep-copy";
 
 Vue.use(Vuex)
 
@@ -10,11 +11,6 @@ const store = new Vuex.Store({
         users: [],
         result: [],
         modal: {
-            visible: false,
-            name: undefined,
-            params: {}
-        },
-        modalDefault: {
             visible: false,
             name: undefined,
             params: {}
@@ -87,12 +83,14 @@ const store = new Vuex.Store({
 
         updateTasksWatchers: ({commit, state, dispatch}) => {
             let updatedTasks = [];
+            let users = deepCopy(state.users);
+            let tasks = deepCopy(state.tasks);
 
-            state.tasks.forEach(task => {
+            tasks.forEach(task => {
                 let updatedWatchers = [];
 
                 task.watchers.forEach(watcher => {
-                    let user = state.users.find(user => user.id === watcher);
+                    let user = users.find(user => user.id === watcher);
 
                     updatedWatchers.push({
                         id: user.id,
@@ -111,12 +109,14 @@ const store = new Vuex.Store({
 
         splitData: ({commit, state}) => {
             let result = [];
+            let users = deepCopy(state.users);
+            let tasks = deepCopy(state.tasks);
 
-            state.users.forEach(user => {
+            users.forEach(user => {
                 let tasksResult = [];
 
                 user.tasks.forEach(item => {
-                    let userTask = state.tasks.find(task => task.id === item || task.id === item.id);
+                    let userTask = tasks.find(task => task.id === item || task.id === item.id);
 
                     userTask.responsible = user.id;
 
@@ -132,9 +132,10 @@ const store = new Vuex.Store({
         },
 
         updateSortedTasks: ({commit, state}, payload) => {
+            let result = deepCopy(state.result);
             let newResult = [];
 
-            state.result.forEach(user => {
+            result.forEach(user => {
                 if (user.id === payload.userId) {
                     user.tasks = payload.sortedTasks;
                 }
@@ -148,8 +149,10 @@ const store = new Vuex.Store({
         removeUser: ({commit, state, dispatch}, payload) => {
             let updatedUsers = [];
             let updatedTasks = [];
+            let users = deepCopy(state.users);
+            let tasks = deepCopy(state.tasks);
 
-            state.users.forEach(user => {
+            users.forEach(user => {
                 if (user.id !== payload) {
                     updatedUsers.push(user);
                 }
@@ -157,13 +160,13 @@ const store = new Vuex.Store({
 
             commit('changeUsers', updatedUsers);
 
-            state.tasks.forEach(task => {
+            tasks.forEach(task => {
                 let updatedWatchers = [];
 
                 task.watchers.forEach(watcher => {
 
                     if (watcher.id !== payload) {
-                        let user = state.users.find(user => user.id === watcher.id);
+                        let user = users.find(user => user.id === watcher.id);
 
                         updatedWatchers.push({
                             id: user.id,
@@ -182,10 +185,14 @@ const store = new Vuex.Store({
         },
 
         toggleModal: ({state, commit}, payload) => {
-            let modalData = state.modal;
+            let modalData = deepCopy(state.modal);
 
             if (typeof payload === "string" && payload === "close") {
-                modalData = state.modalDefault;
+                modalData = {
+                    visible: false,
+                    name: undefined,
+                    params: {}
+                };
             } else if (typeof payload === "object" && typeof payload.type === "string") {
                 modalData = {
                     visible: true,
@@ -208,8 +215,10 @@ const store = new Vuex.Store({
         removeTask: ({state, dispatch, commit}, payload) => {
             let updatedTasks = [];
             let updatedUsers = [];
+            let users = deepCopy(state.users);
+            let tasks = deepCopy(state.tasks);
 
-            state.tasks.forEach(task => {
+            tasks.forEach(task => {
                 if (task.id !== payload) {
                     updatedTasks.push(task);
                 }
@@ -217,12 +226,12 @@ const store = new Vuex.Store({
 
             commit("changeTasks", updatedTasks);
 
-            state.users.forEach(user => {
+            users.forEach(user => {
                 let updatedUserTasks = [];
 
-                user.tasks.forEach(task => {
-                    if (task.id !== payload) {
-                        updatedUserTasks.push(task)
+                user.tasks.forEach(taskID => {
+                    if (taskID !== payload) {
+                        updatedUserTasks.push(taskID)
                     }
                 });
 
@@ -250,15 +259,61 @@ const store = new Vuex.Store({
             commit("changeUsers", updatedUsers);
             dispatch("splitData");
             dispatch("toggleModal", "close");
+        },
+
+        pushTask: ({state, commit, dispatch}, payload) => {
+            let tasks = deepCopy(state.tasks);
+            let users = deepCopy(state.users);
+            let task = {
+                ...payload,
+                date: new Date().toISOString(),
+            };
+
+            if (Array.isArray(task.watchers)) {
+                task.watchers.forEach((watcher, index) => {
+                    task.watchers[index] = watcher.id
+                });
+            }
+
+            tasks.forEach((taskItem, taskIndex) => {
+                taskItem.watchers.forEach((watcher, watcherIndex) => {
+                    tasks[taskIndex].watchers[watcherIndex] = watcher.id
+                });
+            });
+
+            users.forEach((user, userIndex) => {
+                user.tasks.forEach((taskItem, taskIndex) => {
+                    users[userIndex].tasks[taskIndex] = taskItem.id
+                });
+
+                if (user.id === task.responsible.id) {
+                    users[userIndex].tasks.push(task.id);
+                }
+            });
+
+            console.log(task)
+
+            tasks.push(task);
+            commit("changeTasks", tasks);
+            commit("changeUsers", users);
+            dispatch("updateTasksWatchers").then(() => {
+                dispatch("splitData").then(() => {
+                    dispatch("toggleModal", "close");
+                })
+            })
         }
     },
     getters: {
         getResult: state => {
-            return state.result;
+            return deepCopy(state.result);
         },
 
         getModalData: state => {
-            return state.modal;
+            return deepCopy(state.modal);
+        },
+
+        getTasks: state => {
+            return deepCopy(state.tasks);
         }
     }
 })
