@@ -299,7 +299,7 @@ const store = new Vuex.Store({
          *
          * @param state
          * @param commit
-         * @param {Object|string} payload
+         * @param {{type: string, params: Object}|string} payload
          */
         toggleModal: ({state, commit}, payload) => {
             let modalData = deepCopy(state.modal);
@@ -414,7 +414,7 @@ const store = new Vuex.Store({
          * @param state
          * @param commit
          * @param dispatch
-         * @param {Object} payload
+         * @param {{type: string, task: Object}} payload
          */
         pushTask: ({state, commit, dispatch}, payload) => {
             if (typeof payload.type !== "string") {
@@ -502,7 +502,7 @@ const store = new Vuex.Store({
          * Получение результатирующего состояния.
          *
          * @param state
-         * @return {[]}
+         * @return {Array}
          */
         getResult: state => {
             return state.result;
@@ -512,7 +512,7 @@ const store = new Vuex.Store({
          * Получение состояния модального окна.
          *
          * @param state
-         * @return {{visible: boolean, type: undefined, params: {}}}
+         * @return {{visible: boolean, type: undefined|string, params: {}}}
          */
         getModalData: state => {
             return state.modal;
@@ -522,7 +522,7 @@ const store = new Vuex.Store({
          * Получение списка задач.
          *
          * @param state
-         * @return {[]}
+         * @return {Array}
          */
         getTasks: state => {
             return state.tasks;
