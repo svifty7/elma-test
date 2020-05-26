@@ -46,8 +46,8 @@
              * На вход принимает строку даты в формате ISO.
              * Возвращает строку с "человеческой" датой.
              *
-             * @return {string}
              * @param {string} dateString
+             * @return {string}
              */
             convertDate(dateString) {
                 const date = new Date(dateString);
@@ -68,11 +68,11 @@
             },
 
             /**
-             * Обрезка имени пользователя отслеживающего задачу до одной буквы.
+             * Обрезка имени пользователя отслеживающего задачу до одной буквы, чтобы поместить вместо фотографии.
              * Используется, если у пользователя нет ссылки на аватар.
              *
              * @param {string} name
-             * @return {*}
+             * @return {string}
              */
             concatWatcherName(name) {
                 return name.slice(0, 1);
