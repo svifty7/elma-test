@@ -112,7 +112,7 @@ const store = new Vuex.Store({
          */
         getUsers: context => {
             axios
-                .get('/json/users.json1')
+                .get('/json/users.json')
                 .then(response => {
                     context.commit('changeUsers', response.data);
                     store.dispatch('getTasks')
