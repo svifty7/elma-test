@@ -23,6 +23,12 @@
             this.$store.dispatch('getData');
         },
         computed: {
+
+            /**
+             * Вызов метода для получения готового состояния приложения.
+             *
+             * @return {any}
+             */
             tableData() {
                 return this.$store.getters.getResult;
             }

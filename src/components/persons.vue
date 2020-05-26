@@ -19,6 +19,11 @@
         props: ["users"],
         components: { person },
         methods: {
+
+            /**
+             * Вызов метода для открытия модального окна создания пользователя.
+             * Параметром передается строка с типом модального окна.
+             */
             openModal() {
                 this.$store.dispatch("toggleModal", "user-add")
             }

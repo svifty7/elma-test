@@ -74,6 +74,7 @@
 <script>
     import optionsList from "@/components/options-list";
     import Multiselect from "vue-multiselect";
+    import {deepCopy} from "@/helpers/deep-copy";
 
     export default {
         name: "modify-task",
@@ -90,9 +91,9 @@
             Multiselect
         },
         mounted() {
-            const modalData = this.$store.getters.getModalData;
-            const users = this.$store.getters.getResult;
-            const tasks = this.$store.getters.getTasks;
+            const modalData = deepCopy(this.$store.getters.getModalData);
+            const users = deepCopy(this.$store.getters.getResult);
+            const tasks = deepCopy(this.$store.getters.getTasks);
             const taskUser = modalData.params.user ?
                 modalData.params.user :
                 users.find(user => user.id === modalData.params.responsible);
@@ -111,20 +112,42 @@
             }
         },
         methods: {
+
+            /**
+             * Добавление пустого поля в список внутри задачи.
+             */
             addOption() {
                 this.task.list.push("")
             },
 
+            /**
+             * Удаление поля из списка внутри задачи.
+             *
+             * @param index
+             */
             removeOption(index) {
                 this.task.list.splice(index, 1)
             },
 
+            /**
+             * Вызов метода для удаления задачи.
+             * В параметре указывается ID задачи.
+             */
             removeTask() {
                 this.$store.dispatch("removeTask", this.task.id);
             },
 
+            /**
+             * Вызов метода для создания или обновления задачи.
+             * В параметре отправляется объект с типом действия и параметрами задачи.
+             */
             submitTask() {
-                this.$store.dispatch("pushTask", this.task);
+                const pushData = {
+                    type: this.type,
+                    task: this.task
+                }
+
+                this.$store.dispatch("pushTask", deepCopy(pushData));
             },
         }
     }

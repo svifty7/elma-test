@@ -31,25 +31,57 @@
             </div>
         </div>
 
-        <div class="task__date">{{dateFormatting(task.date)}}</div>
+        <div class="task__date">{{convertDate(task.date)}}</div>
     </div>
 </template>
 
 <script>
-    import {convertDate} from "@/helpers/conver-date";
-
     export default {
         name: "task",
         props: ["task"],
         methods: {
-            dateFormatting(date) {
-                convertDate(date)
+
+            /**
+             * Конвертация даты в формат ДД.ММ.ГГГГ.
+             * На вход принимает строку даты в формате ISO.
+             * Возвращает строку с "человеческой" датой.
+             *
+             * @param date
+             * @return {string}
+             */
+            convertDate(date) {
+                date = new Date(date);
+
+                let day = date.getDate();
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
+
+                if (day < 10) {
+                    day = "0" + day;
+                }
+
+                if (month < 10) {
+                    month = "0" + month;
+                }
+
+                return day + "." + month + "." + year;
             },
 
+            /**
+             * Обрезка имени пользователя отслеживающего задачу до одной буквы.
+             * Используется, если у пользователя нет ссылки на аватар.
+             *
+             * @param name
+             * @return {*}
+             */
             concatWatcherName(name) {
                 return name.slice(0, 1);
             },
 
+            /**
+             * Вызов метода открытия модального окна для редактирования задачи.
+             * Отправляет объект с типом модального окна и параметрами задачи.
+             */
             updateTask() {
                 const modalInfo = {
                     type: "update-task",

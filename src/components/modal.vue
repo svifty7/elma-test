@@ -29,15 +29,31 @@
         name: "modal",
         components: { createUser, modifyTask },
         computed: {
+
+            /**
+             * Вызов метода для получения состояния модального окна.
+             *
+             * @return {any}
+             */
             modal() {
                 return this.$store.getters.getModalData;
             },
 
+            /**
+             * Условие для отображения модального окна создания/редактирования задачи.
+             *
+             * @return {boolean}
+             */
             modalTypeIsTask() {
                 return this.modal.type === 'new-task' || this.modal.type === 'update-task'
             }
         },
         methods: {
+
+            /**
+             * Вызов метода закрытия модального окна.
+             * Параметром закрытия является строка "close".
+             */
             closeModal() {
                 this.$store.dispatch("toggleModal", "close")
             }

@@ -50,6 +50,10 @@
             SlickItem
         },
         methods: {
+            /**
+             * Вызов метода для обновления порядка задач у пользователя.
+             * Отправляется объект с ID пользователя и готовым списком задач.
+             */
             changeSortedTasks(event, userId) {
                 const updatedTasks = {
                     userId: userId,
@@ -59,10 +63,19 @@
                 this.$store.dispatch("updateSortedTasks", updatedTasks)
             },
 
+            /**
+             * Вызов метода удаления пользователя.
+             * Параметром отправляется ID удаляемого пользователя.
+             */
             removeUser() {
                 this.$store.dispatch("removeUser", this.user.id)
             },
 
+            /**
+             * Открытие модального окна для создания задачи.
+             * Отправляет объект с типом модального окна и объект с параметрами: имя задачи и ID пользователя,
+             * к которому необходимо прикрепить задачу.
+             */
             newTask() {
                 const modalInfo = {
                     type: "new-task",

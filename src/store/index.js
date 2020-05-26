@@ -12,19 +12,40 @@ const store = new Vuex.Store({
         result: [],
         modal: {
             visible: false,
-            name: undefined,
+            type: undefined,
             params: {}
         }
     },
     mutations: {
+
+        /**
+         * Установка состояния списка пользователей.
+         * Принимает массив с объектами пользователей.
+         *
+         * @param state
+         * @param payload
+         */
         changeUsers: (state, payload) => {
             state.users = payload
         },
 
+        /**
+         * Установка состояния списка задач.
+         * Принимает массив с объектами задач.
+         *
+         * @param state
+         * @param payload
+         */
         changeTasks: (state, payload) => {
             state.tasks = payload
         },
 
+        /**
+         * Установка результатирующего состояния, откуда выводится информация на экран.
+         *
+         * @param state
+         * @param payload
+         */
         setResult: (state, payload) => {
             const payloadString = JSON.stringify(payload);
 
@@ -33,11 +54,28 @@ const store = new Vuex.Store({
             localStorage.setItem('users', payloadString);
         },
 
+        /**
+         * Изменение состояние модального окна.
+         *
+         * @param state
+         * @param payload
+         */
         changeModal: (state, payload) => {
             state.modal = payload;
         }
     },
     actions: {
+
+        /**
+         * Метод для определения источника, откуда будут запрашиваться данные для построения таблицы приложения.
+         * Приоритетом источника является localStorage, если в localStorage нет строки с ключом "users", то данные
+         * будут запрашиваться из файлов json методами getUsers & getTasks.
+         *
+         * Для сброса текущего состояния localStorage и запроса данных из файлов json: добавить к URL "/?reset=true"
+         *
+         * @param commit
+         * @param dispatch
+         */
         getData: ({commit, dispatch}) => {
             const storageData = JSON.parse(localStorage.getItem('users'));
             const locationParams = window.location.search.replace("?", "").split(";");
@@ -65,6 +103,13 @@ const store = new Vuex.Store({
             }
         },
 
+        /**
+         * Получение списка пользователей из файла json.
+         * Используется в том случае, если в localStorage не было сохранено готовое состояние.
+         * В методе используется плагин Axios для упрощения создания запросов.
+         *
+         * @param context
+         */
         getUsers: context => {
             axios
                 .get('/json/users.json')
@@ -78,6 +123,13 @@ const store = new Vuex.Store({
                 });
         },
 
+        /**
+         * Получение списка задач из файла json.
+         * Используется в том случае, если в localStorage не было сохранено готовое состояние.
+         * В методе используется плагин Axios для упрощения создания запросов.
+         *
+         * @param context
+         */
         getTasks: context => {
             axios
                 .get('/json/tasks.json')
@@ -91,6 +143,14 @@ const store = new Vuex.Store({
                 });
         },
 
+        /**
+         * Прогон всех задач в цикле и обновление юзеров отслеживающих конкретную задачу.
+         * Для отображения все поля не нужны, поэтому добавляются только необходимые: id, имя, ссылка на картинку.
+         *
+         * @param commit
+         * @param state
+         * @param dispatch
+         */
         updateTasksWatchers: ({commit, state, dispatch}) => {
             let updatedTasks = [];
             let users = deepCopy(state.users);
@@ -99,15 +159,17 @@ const store = new Vuex.Store({
             tasks.forEach(task => {
                 let updatedWatchers = [];
 
-                task.watchers.forEach(watcher => {
-                    let user = users.find(user => user.id === watcher);
+                if (Array.isArray(task.watchers) && task.watchers.length) {
+                    task.watchers.forEach(watcher => {
+                        let user = users.find(user => user.id === watcher);
 
-                    updatedWatchers.push({
-                        id: user.id,
-                        name: user.first_name + ' ' + user.last_name,
-                        image: user.image
+                        updatedWatchers.push({
+                            id: user.id,
+                            name: user.first_name + ' ' + user.last_name,
+                            image: user.image
+                        });
                     });
-                });
+                }
 
                 task.watchers = updatedWatchers;
                 updatedTasks.push(task);
@@ -117,6 +179,14 @@ const store = new Vuex.Store({
             dispatch('splitData');
         },
 
+        /**
+         * Объединение двух состояний: список пользователей и список задач в один массив.
+         * Прогон в цикле всех пользователей и добавление ему задач с такими же ID.
+         * Готовый массив помещается в стейт "result", откуда строится таблица приложения.
+         *
+         * @param commit
+         * @param state
+         */
         splitData: ({commit, state}) => {
             let result = [];
             let users = deepCopy(state.users);
@@ -141,6 +211,16 @@ const store = new Vuex.Store({
             commit('setResult', result);
         },
 
+        /**
+         * Обновление порядка списка задач после перетаскивания.
+         * На вход принимается объект с обновленным массивом списком задач пользователя, в котором было перетаскивание и
+         * ID этого пользователя.
+         * Используется плагином Vue-Slicksort.
+         *
+         * @param commit
+         * @param state
+         * @param payload
+         */
         updateSortedTasks: ({commit, state}, payload) => {
             let result = deepCopy(state.result);
             let newResult = [];
@@ -156,6 +236,15 @@ const store = new Vuex.Store({
             commit('setResult', newResult);
         },
 
+        /**
+         * Удаление пользователя.
+         * На входе только ID пользователя, которого нужно удалить.
+         *
+         * @param commit
+         * @param state
+         * @param dispatch
+         * @param payload
+         */
         removeUser: ({commit, state, dispatch}, payload) => {
             let updatedUsers = [];
             let updatedTasks = [];
@@ -194,13 +283,25 @@ const store = new Vuex.Store({
             dispatch('splitData')
         },
 
+        /**
+         * Открытие и закрытие модального окна.
+         *
+         * Чтобы открыть модальное окно, необходимо отправить параметр в виде строки с типом модального окна, который
+         * указан в условии отображения, либо объект с ключом "type" и типом в значении ключа.
+         *
+         * Чтобы закрыть модальное окно, необходимо отправить параметр "close".
+         *
+         * @param state
+         * @param commit
+         * @param payload
+         */
         toggleModal: ({state, commit}, payload) => {
             let modalData = deepCopy(state.modal);
 
             if (typeof payload === "string" && payload === "close") {
                 modalData = {
                     visible: false,
-                    name: undefined,
+                    type: undefined,
                     params: {}
                 };
             } else if (typeof payload === "object" && typeof payload.type === "string") {
@@ -222,6 +323,15 @@ const store = new Vuex.Store({
             commit('changeModal', modalData);
         },
 
+        /**
+         * Удаление задачи.
+         * На вход принимается ID задачи, которую нужно удалить.
+         *
+         * @param state
+         * @param dispatch
+         * @param commit
+         * @param payload
+         */
         removeTask: ({state, dispatch, commit}, payload) => {
             let updatedTasks = [];
             let updatedUsers = [];
@@ -251,10 +361,20 @@ const store = new Vuex.Store({
 
             commit("changeUsers", updatedUsers)
 
-            dispatch("splitData");
-            dispatch("toggleModal", "close");
+            dispatch("splitData").then(() => {
+                dispatch("toggleModal", "close");
+            });
         },
 
+        /**
+         * Создание пользователя.
+         * На входе объект с именем, фамилией и ссылкой на аватар пользователя.
+         *
+         * @param state
+         * @param commit
+         * @param dispatch
+         * @param payload
+         */
         createUser: ({state, commit, dispatch}, payload) => {
             const userInfo = {
                 ...payload,
@@ -267,19 +387,40 @@ const store = new Vuex.Store({
             updatedUsers.push(userInfo);
 
             commit("changeUsers", updatedUsers);
-            dispatch("splitData");
-            dispatch("toggleModal", "close");
+            dispatch("splitData").then(() => {
+                dispatch("toggleModal", "close");
+            });
         },
 
+        /**
+         * Добавление или изменение задачи.
+         * На вход принимается объект с двумя ключами: тип действия (добавление/изменение), параметры задачи.
+         * Автоматически подставляется текущая дата.
+         *
+         * @param state
+         * @param commit
+         * @param dispatch
+         * @param payload
+         */
         pushTask: ({state, commit, dispatch}, payload) => {
             let tasks = deepCopy(state.tasks);
             let users = deepCopy(state.users);
+            let modalParams = deepCopy(state.modal.params);
+
+            let listCheck =
+                Array.isArray(payload.task.list) && payload.task.list.length && payload.task.list[0] !== "";
+
+            let responsibleID = payload.task.responsible.id;
             let task = {
-                ...payload,
                 date: new Date().toISOString(),
+                desc: payload.task.desc,
+                id: payload.task.id,
+                list: listCheck ? payload.task.list : [],
+                name: payload.task.name,
+                watchers: payload.task.watchers
             };
 
-            if (Array.isArray(task.watchers)) {
+            if (Array.isArray(task.watchers) && task.watchers.length) {
                 task.watchers.forEach((watcher, index) => {
                     task.watchers[index] = watcher.id
                 });
@@ -291,19 +432,38 @@ const store = new Vuex.Store({
                 });
             });
 
-            users.forEach((user, userIndex) => {
-                user.tasks.forEach((taskItem, taskIndex) => {
-                    users[userIndex].tasks[taskIndex] = taskItem.id
+            if (responsibleID !== modalParams.responsible && payload.type === "update-task") {
+                let oldResponsible = users.find(user => user.id === modalParams.responsible);
+                let newResponsible = users.find(user => user.id === responsibleID);
+
+                oldResponsible.tasks.forEach((taskItem, index) => {
+                    if (task.id === taskItem.id || task.id === taskItem) {
+                        oldResponsible.tasks.splice(index, 1);
+                    }
                 });
 
-                if (user.id === task.responsible.id) {
+                newResponsible.tasks.push(task.id);
+            }
+
+            users.forEach((user, userIndex) => {
+                user.tasks.forEach((taskItem, taskIndex) => {
+                    users[userIndex].tasks[taskIndex] = taskItem.id ? taskItem.id : taskItem;
+                });
+
+                if (user.id === responsibleID && payload.type === "new-task") {
                     users[userIndex].tasks.push(task.id);
                 }
             });
 
-            console.log(task)
-
-            tasks.push(task);
+            if (payload.type === "new-task") {
+                tasks.push(task);
+            } else if (payload.type === "update-task") {
+                tasks.forEach((el, index) => {
+                    if (el.id === task.id) {
+                        tasks[index] = task;
+                    }
+                });
+            }
 
             commit("changeTasks", tasks);
             commit("changeUsers", users);
@@ -315,16 +475,35 @@ const store = new Vuex.Store({
         }
     },
     getters: {
+
+        /**
+         * Получение результатирующего состояния.
+         *
+         * @param state
+         * @return {[]}
+         */
         getResult: state => {
-            return deepCopy(state.result);
+            return state.result;
         },
 
+        /**
+         * Получение состояния модального окна.
+         *
+         * @param state
+         * @return {{visible: boolean, type: undefined, params: {}}}
+         */
         getModalData: state => {
-            return deepCopy(state.modal);
+            return state.modal;
         },
 
+        /**
+         * Получение списка задач.
+         *
+         * @param state
+         * @return {[]}
+         */
         getTasks: state => {
-            return deepCopy(state.tasks);
+            return state.tasks;
         }
     }
 })

@@ -38,6 +38,11 @@
     export default {
         name: "create-user",
         methods: {
+
+            /**
+             * Вызов метода для создания пользователя.
+             * В параметре передается объект с именем, фамилией и ссылкой на аватар пользователя.
+             */
             addUser() {
                 const userInfo = {
                     first_name: this.$refs.first_name.value,
